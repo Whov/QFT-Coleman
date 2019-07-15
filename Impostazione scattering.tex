@@ -1,0 +1,105 @@
+\documentclass[]{article}
+\usepackage{simplewick}
+\usepackage{tikz-feynman}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+
+%Bra e Ket
+\newcommand{\bra}[1]{\langle#1|}
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\dd}{\mathrm{d}}
+
+%opening
+\title{Note di scattering}
+\author{Bruno Bucciotti}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Imposto la descrizione formale dello scattering. Faccio riferimento ad alcuni risultati della lezione 6 del corso di Paffuti di scattering.
+\end{abstract}
+
+\section{Richiami}
+Ricordo alcune cose descritte approfonditamente da Paffuti.
+\subsection{Matrice $S$}
+Lo scopo della matrice $S$ è fornire l'ampiezza di probabilità per un dato processo di scattering. Per specificare input e output desideriamo utilizzare stati che abbiano un comportamento facile sotto evoluzione libera. Ad esempio, un pacchetto con posizione e impulso abbastanza ben definiti. Dunque gli stati liberi etichettano il processo di scattering, ma l'ampiezza va poi calcolata facendo evolvere (da chiarire fra poco) secondo l'hamiltoniana interagente. 
+
+\subsection{Operatori di Moller}
+Ho lo stato libero in ingresso. Per "convertirlo" in quello interagente lo faccio evolvere indietro nel tempo secondo l'hamiltoniana libera e poi lo riporto avanti nel tempo con l'hamiltoniana interagente (notare l'analogia con lo scattering classico). In formule ho
+\[ \Omega_+ = \lim_{t\rightarrow -\infty} U^\dagger(t) U_0(t) \]
+Analogamente uno stato in uscita va fatto evolvere avanti nel tempo con l'hamiltoniana libera, poi riportato indietro con quella interagente.
+\[ \Omega_- = \lim_{t\rightarrow \infty} U^\dagger(t) U_0(t) \]
+In termini di questi operatori la matrice di scattering $S$ è definita come
+\[ S = \Omega_-^\dagger \Omega_+ \]
+
+\subsection{Interaction picture}
+C'è un legame fra la matrice $S$ e la rappresentazione di interazione, che richiamo ora.
+
+Definiamo
+\[ \ket{\psi_I}(t) = U_0^\dagger(t) \ket{\psi}(t) \]
+che si dimostra evolvere con l'hamiltoniana
+\[ H_I(t) = U_0^\dagger(t) V(t) U_0(t) \]
+Si verifica anche che
+\[ \ket{\psi_I}(t) = U_I(t) \ket{\psi_I}(0),\qquad\qquad U_I(t) = U_0^\dagger(t) U(t) \]
+così come
+\[ \ket{\psi_I}(0) = U^\dagger(t) U_0(t) \ket{\psi_I}(t) \]
+
+Concludendo si osserva che
+\[ S = \Omega_-^\dagger \Omega_+ = U_I(\infty, 0)U_I(0, -\infty) = U_I(\infty, -\infty) \]
+
+Poiché $U_I$ fa evolvere $\ket{\psi_I}$, che abbiamo detto evolve con l'hamiltoniana $H_I$, si ha infine
+\[ S = T \exp\left( -i\int_{-\infty}^\infty H_I(t)\, \dd t \right) \]
+
+\section{Calcolare la matrice S}
+Molte cose saranno date senza dimostrazione.
+\subsection{Teorema di Wick}
+Questo teorema consente di trasformare un prodotto t-ordinato in una somma di prodotti normalmente ordinati. Il teorema afferma
+
+\[ T(\phi_1\phi_2 .. \phi_n) = :\phi_1\phi_2..\phi_n: + :\contraction{}{\phi}{{}_1}{\phi} \phi_1\phi_2...\phi_n : + \mathrm{(cyc)} + :\contraction{}{\phi}{{}_1}{\phi} \contraction{\phi_1\phi_2}{\phi}{{}_3}{\phi} \phi_1\phi_2\phi_3\phi_4...\phi_n : + \mathrm{(cyc)} + ... \]
+
+Supponiamo per esempio che $H_I(t) = \int g f(t)\psi^*\psi\phi\,\dd^3 x$. Allora l'esponenziale t-ordinato della formula di Dyson $T \exp\left( -ig \int f(t) \psi^*\psi\phi\, \dd^4 x \right)$ avrà al suo interno termini come $\dfrac{(-ig)^2}{2!} \int f(t_1) f(t_2) T(\psi^*_1\psi_1\phi_1\psi^*_2\psi_2\phi_2)\,\dd^4 x_1 \dd^4 x_2$ (si noti che T è lineare). Il teorema di Wick ci aiuta a valutare tali termini.
+
+\subsection{Diagrammi di Wick}
+Non ci serve scrivere l'espansione algebrica dei vari termini normalmente ordinati, possiamo associare a ciascun termine un diagramma di Wick (corrispondenza biunivoca). Dunque ad esempio $T(\psi^*_1\psi_1\phi_1\psi^*_2\psi_2\phi_2)$ si scrive come la somma di tutti i diagrammi di Wick a due vertici.
+
+Per disegnare un diagramma di Wick, iniziare disegnando il giusto numero di vertici, in base al numero di parametri che entrano nell'integrale. Collegare poi i vertici seguendo le contrazioni. Due diagrammi sono uguali (e dunque compaiono una sola volta nello sviluppo) se e solo se sono ottenuti contraendo gli stessi vertici con gli stessi altri.
+
+\subsection{Molteplicità}
+\feynmandiagram [horizontal= 1 to 2] {
+	1 [particle=1] -- [fermion] 2 [particle=2] -- [fermion] 3 [particle=3] -- [fermion] 4 [particle=4] -- [fermion] 1
+};
+\feynmandiagram [vertical' = 1 to 4] {
+	1 [particle=1] -- [fermion] 4 [particle=4] -- [fermion] 3 [particle=3] -- [fermion] 2 [particle=2] -- [fermion] 1
+};
+\feynmandiagram [horizontal' = 4 to 1] {
+1 [particle=1] -- [fermion] 4 [particle=4] -- [fermion] 3 [particle=3] -- [fermion] 2 [particle=2] -- [fermion] 1
+};
+
+Il primo e il secondo diagramma sono diversi, poichè i collegamenti sono diversi. Al contrario, il secondo e il terzo sono uguali. D'altra parte tutti e tre, se valutiamo l'integrale corrispondente, danno lo stesso risultato (per 2 e 3 è banale, non lo è per 1 e 2). Possiamo e vogliamo dunque raggruppare i vari diagrammi, se il loro contributo è uguale. Diremo che due diagrammi hanno lo stesso pattern se i loro integrali, sebbene forse si scrivano diversamente, diventano uguali rinominando i vertici (cioè facendo un cambio di variabili). Quindi 1 e 2 hanno lo stesso pattern e il cambio di variabili che manda un integrale nell'altro consiste nello scambiare $x_2$ e $x_4$ come variabili di integrazione.
+
+Quanti diagrammi di $n(D)$ vertici ci sono di un dato pattern? $\dfrac{n(D)!}{S(D)}$, dove $S(D)$ conta, per un dato diagramma $D$, in quanti modi si possono rietichettare i vertici in modo tale che, seguendo le stesse prescrizioni riguardo ai collegamenti fra vertici, i collegamenti finali risultino uguali (come in 2 e 3). In pratica rietichetto in tutti i modi possibili ($n(D)!$) e quoziento per quelli che portano alla stessa cosa.
+
+Dunque per ogni pattern scrivo l'integrale $:O(D):$ e il contributo di tutti i diagrammi con quel pattern si può riassumere come $\dfrac{n(D)!}{S(D)}\dfrac{:O(D):}{n(D)!}$ ($n(D)!$ a denominatore viene dall'espansione dell'esponenziale).
+
+Riassumendo, la matrice di scattering $S$ è data dalla somma del contributo associato ad ogni possibile pattern, pesato con un fattore $\dfrac{1}{S(D)}$.
+
+\subsection{Diagrammi connessi vs generici}
+\subsubsection*{Intermezzo: Normal ordering}
+Normal ordering è definito sull'algebra libera degli operatori $a$, $a^\dagger$, cioè combinazioni lineari di stringhe ordinate di simboli $a$, $a^\dagger$. L'algebra che abbiamo in testa (quella con le relazioni di commutazione canoniche, CCR) è quella che quozienta $aa^\dagger-a^\dagger a -1 \sim 0$. In pratica se ho due operatori $A$, $B$ uguali nell'algebra CCR, non è necessariamente vero che $:A: = :B:$. E' vero solo se $A=B$ nell'algebra libera. Con questa accortezza, l'operazione di normal ordering è lineare.
+\\
+
+Prendiamo un pattern disconnesso $D$, scomponibile diagrammi connessi $D_i$ ciascuno presente $n_i$ volte. Allora l'integrale $O(D)$ si fattorizza nel prodotto degli integrali associati ai singoli pattern. Nota bene: il contributo di interesse è $:O(D):$, l'operatore normalmente ordinato associato a $O(D)$. L'idea è di riscrivere l'operatore $O(D)$ in un modo equivalente $O_2(D)$ (senza mai applicare le regole di commutazione canoniche) e considerare l'operatore normalmente ordinato associato $O_2(D)$.
+
+\[ \dfrac{O(D)}{S(D)} = \prod_i \frac{1}{n_i!} \left( \dfrac{O(D_i)}{S(D_i)} \right)^{n_i} \]
+Il prodotto corre sulla lista di diagrammi connessi esistenti. I fattori $S(D_i)$ a dividere vengono dalla possibilità di permutare le etichette all'interno di un singolo pattern connesso. Inoltre se un dato pattern connesso compare $n_i$ volte, posso scambiare le etichette "in blocco" fra due qualsiasi tali pattern connessi e anche questo dà lo stesso diagramma.
+\\
+Abbiamo chiarito in 2.3 che $S$ è data dalla somma di tutti i pattern, pesati con un fattore $\dfrac{1}{S(D)}$. Un pattern è caratterizzato univocamente dalla sequenza $\{n_i\}$ che descrive quante copie di ogni pattern connesso compaiono. La somma è dunque
+\[ \sum_{n_1 = 0}^{\infty} \sum_{n_2 = 0}^{\infty} .. \sum \dfrac{O(D_{n_1,n_2,..})}{S(D_{n_1,n_2,..})} = \sum_{n_1 = 0}^{\infty} \sum_{n_2 = 0}^{\infty} .. \sum \prod_{i=1} \dfrac{1}{n_i!} \left( \dfrac{O(D_i)}{S(D_i)} \right)^{n_i} \]
+\[ = \prod_{i=1} \sum_{n=0}^{\infty} \dfrac{1}{n!} \left( \dfrac{O(D_i)}{S(D_i)} \right)^{n} = \prod_{i=1} \exp\left( \dfrac{O(D_i)}{S(D_i)} \right) = \exp\left( \sum_{i=1} \dfrac{O(D_i)}{S(D_i)} \right) \]
+
+Notare che non abbiamo mai usato le regole di commutazione canoniche CCR, dunque possiamo prendere il normal ordering ad ambo i lati. Si ha che
+\[ S = :\exp\left( \sum_{i=1} \dfrac{O(D_i)}{S(D_i)} \right): \]
+
+\end{document}
